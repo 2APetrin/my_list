@@ -7,6 +7,7 @@
 
 #define LOCATION __PRETTY_FUNCTION__, __FILE__, __LINE__
 #define list_ctor(list) list_ctor_((list), {(#list), LOCATION})
+#define list_dump(list) list_dump_((list), list_verify((list)), {LOCATION})
 
 
 //! @brief type of data inside list
@@ -46,6 +47,7 @@ struct list_elem
 //! @var data - ptr to array of list elements structures
 //! @var tail - index of last elem
 //! @var head - index of first elem
+//! @var free - index of first free list element
 //! @var info - struct with informaion about our variable
 
 struct my_list
@@ -53,6 +55,7 @@ struct my_list
     struct list_elem * data;
     int tail;
     int head;
+    int free;
 
     var_info info;
 };
@@ -97,4 +100,44 @@ struct var_info
 //!
 //! @return 1 if error, 0 if ok
 
-int list_ctor_(my_list * list, struct var_info creation_params);
+int list_ctor_(struct my_list * list, struct var_info creation_params);
+
+
+//! @brief deletes our list anf frees all allocated memory
+//!
+//! @param [in] list - ptr to our list object
+//!
+//! @return 1 if error in destruction, 0 if ok
+
+int list_dtor(struct my_list * list);
+
+
+//! @brief adds an element to list after choosen element
+//!
+//! @param [out] list - ptr to our list object
+//! @param [in]  curr - element where pushing element will be added after
+//! @param [in]  val  - value of element
+//!
+//! @return 1 if error, 0 if ok
+
+int list_push(struct my_list * list, unsigned curr, elem val);
+
+
+//! @brief checks our list for errors before or after using it in function
+//!
+//! @param [in] list - ptr to our list object
+//!
+//! @return error code if there are errors, 0 if list is ok
+
+unsigned list_verify(struct my_list * list); //--not written
+
+
+//! @brief takes error code from list_verify and dump info into log
+//!
+//! @param [in] list     - ptr to our list object
+//! @param [in] err_code - error code to dump
+//! @param [in] loc_inf  - file, function and line where dump was called
+//!
+//! @return 1 if error, 0 if ok
+
+int list_dump_(struct my_list * list, unsigned err_code, location_info loc_inf); //--not written
