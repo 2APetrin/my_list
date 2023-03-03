@@ -69,6 +69,8 @@ int find_free_ind(struct my_list * list)
     assert(list->data);
 
     return list->data[list->free].next;
+
+    return 0; //обработать нормально эту ошибку
 }
 
 
@@ -98,7 +100,7 @@ int insert_after(struct my_list * list, unsigned curr, elem val)
         list->data[list->tail].next = 0;
         list->data[list->tail].prev = 0;  
 
-        printf("first insert (after), free index is - %d\n", list->free);
+        //printf("first insert (after), free index is - %d\n", list->free);
 
         list->head = list->tail;
 
@@ -116,12 +118,12 @@ int insert_after(struct my_list * list, unsigned curr, elem val)
 
         list->data[list->tail].next = 0;
 
-        printf("tail inserted: prev - %d, curr - %d, next - %d, free - %d\n", list->data[list->tail].prev, list->tail, list->data[list->tail].next, list->free);
+        //printf("tail inserted: prev - %d, curr - %d, next - %d, free - %d\n", list->data[list->tail].prev, list->tail, list->data[list->tail].next, list->free);
 
         return 0;
     }
 
-    if (list->free != 0 && list->data[curr].prev != -1) //если просто в тело списка
+    if (list->free != 0 && list->data[curr].prev > 0 && list->data[curr].next > 0) //если просто в тело списка
     {
         list->data[list->free].val = val;
         
@@ -134,12 +136,12 @@ int insert_after(struct my_list * list, unsigned curr, elem val)
         list->data[curr].next = temp;
         list->data[list->data[temp].next].prev = temp;
 
-        printf("inserted in body: prev - %d, curr - %d, next - %d, val - %lg\n", list->data[temp].prev, temp, list->data[temp].next, list->data[temp].val);
+        //printf("inserted in body: prev - %d, curr - %d, next - %d, val - %lg\n", list->data[temp].prev, temp, list->data[temp].next, list->data[temp].val);
 
         return 0;
     }
 
-    printf("smth went wrong, go and see log, nothing happened to list\n");
+    printf("smth went wrong (insert after), go and see log, nothing happened to list\n");
 
     list_dump(list);
     return 1;
@@ -172,7 +174,7 @@ int insert_before(struct my_list * list, unsigned curr, elem val)
         list->data[list->tail].next = 0;
         list->data[list->tail].prev = 0;  
 
-        printf("first insert (before), free index is - %d\n", list->free);
+        //printf("first insert (before), free index is - %d\n", list->free);
 
         list->head = list->tail;
 
@@ -191,7 +193,7 @@ int insert_before(struct my_list * list, unsigned curr, elem val)
 
         list->data[list->head].next = temp;
 
-        printf("insert (before): prev - %d, curr - %d, next - %d, val - %lg\n", list->data[temp].prev, temp, list->data[temp].next, list->data[temp].val);
+        //printf("insert (before): prev - %d, curr - %d, next - %d, val - %lg\n", list->data[temp].prev, temp, list->data[temp].next, list->data[temp].val);
 
         return 0;
     }
@@ -206,12 +208,12 @@ int insert_before(struct my_list * list, unsigned curr, elem val)
         list->free = find_free_ind(list);
         list->data[list->data[curr].prev].next = (int)curr;
 
-        printf("insert (before): prev - %d, curr - %d, next - %d, val - %lg\n", list->data[list->data[curr].prev].prev, list->data[curr].prev, (int)curr, list->data[list->data[curr].prev].val);
+        //printf("insert (before): prev - %d, curr - %d, next - %d, val - %lg\n", list->data[list->data[curr].prev].prev, list->data[curr].prev, (int)curr, list->data[list->data[curr].prev].val);
 
         return 0;
     }
 
-    printf("smth went wrong, go and see log, nothing happened to list\n");
+    printf("smth went wrong (insert before), go and see log, nothing happened to list\n");
 
     list_dump(list);
 
@@ -219,7 +221,123 @@ int insert_before(struct my_list * list, unsigned curr, elem val)
 }
 
 
+int list_pop(struct my_list * list, int curr, elem * val)
+{
+    assert(list);
+    assert(list->data);
 
+    if (curr >= (int)LIST_MIN_LEN && curr < 0)
+    {
+        printf("current position is out of range in list\n");
+        list->status += BAD_CURR_POS;
+
+        list_dump(list);
+
+        return 1;
+    }
+
+    if (curr == 0)
+    {
+        //printf("you can't remove zero element\n");
+
+        list->status += CURR_ZERO_POS;
+
+        list_dump(list);
+
+        return 1;
+    }
+
+    if (curr == list->tail && list->data[curr].prev > 0) //удаление хвоста
+    {
+        list->data[list->data[curr].prev].next = 0;
+        list->tail = list->data[curr].prev;
+        list->data[curr].next = list->free;
+        list->free = curr;
+
+        *val = list->data[curr].val;
+
+        list->data[curr].val = POISON;
+        list->data[curr].prev = -1;
+
+        return 0;
+    }
+
+    if (list->head == list->tail && list->head != 0) // последний элемент
+    {
+        list->data[list->data[list->head].next].prev = 0;
+
+        *val = list->data[curr].val;
+
+        list->data[list->tail].val = POISON;
+        list->data[list->tail].prev = -1;
+        list->data[list->tail].next = list->free;
+        list->free = list->tail;
+        
+        list->head = 0;
+        list->tail = 0;
+
+        //printf("deled: pos - %d, val - %lg\n", curr, *val);
+
+        return 0;
+    }
+
+    if (list->data[curr].next > 0 && list->data[curr].prev > 0) // внутри списка
+    {
+        list->data[list->data[curr].prev].next = list->data[curr].next;
+        list->data[list->data[curr].next].prev = list->data[curr].prev;
+        list->data[curr].prev = -1;
+        list->data[curr].next = list->free;
+        list->free = curr;
+
+        *val = list->data[curr].val;
+        list->data[curr].val = POISON;
+
+        //printf("deled: pos - %d, val - %lg\n", curr, *val);
+
+        return 0;
+    }
+
+    printf("smth went wrong (pop), go and see log, nothing happened to list\n");
+
+    list_dump(list);
+
+    return 1;
+}
+
+
+int print_list(struct my_list * list)
+{
+    assert(list);
+    assert(list->data);
+
+    printf("head - %d, tail - %d, free - %d\n\n", list->head, list->tail, list->free);
+
+    for (unsigned i = 0; i < LIST_MIN_LEN; i++)
+    {
+        printf("%4u", i);
+    }
+    printf("\n");
+
+    for (unsigned i = 0; i < LIST_MIN_LEN; i++)
+    {
+        printf("%4lg", list->data[i].val);
+    }
+    printf("\n");
+
+    for (unsigned i = 0; i < LIST_MIN_LEN; i++)
+    {
+        printf("%4d", list->data[i].next);
+    }
+    printf("\n");
+
+    for (unsigned i = 0; i < LIST_MIN_LEN; i++)
+    {
+        printf("%4d", list->data[i].prev);
+    }
+    printf("\n\n\n");
+
+    return 0;
+}
 
 
 int list_dump_(struct my_list * list, unsigned err_code, location_info loc_inf)

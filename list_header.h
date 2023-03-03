@@ -88,8 +88,8 @@ struct my_list
 //!
 enum list_errors
 {
-    BAD_CURR_POS = (1 << 0),
-
+    BAD_CURR_POS  = (1 << 0),
+    CURR_ZERO_POS = (1 << 1)
 };
 
 
@@ -195,4 +195,15 @@ int insert_after_tail(struct my_list * list, elem val);
 //!
 //! @return 1 if error, 0 if ok
 //!
+int list_pop(struct my_list * list, int curr, elem * val);
+
+
+//! @brief prints in stdout our data arange
+//!
+//! @param [out] list - ptr to our list object
+//!
+//! @return 1 if error, 0 if ok
+//!
+int print_list(struct my_list * list);
+
 
