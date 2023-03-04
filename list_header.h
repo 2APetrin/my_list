@@ -178,16 +178,6 @@ int list_dump_(struct my_list * list, unsigned err_code, location_info loc_inf);
 int find_free_ind(struct my_list * list);
 
 
-//! @brief inserts element after tail of list
-//!
-//! @param [out] list - ptr to our list object
-//! @param [in]  val  - value of inserted element
-//!
-//! @return 1 if error, 0 if ok
-//!
-int insert_after_tail(struct my_list * list, elem val);
-
-
 //! @brief gets val from node and deletes it
 //!
 //! @param [out] list - ptr to our list object
@@ -207,3 +197,41 @@ int list_pop(struct my_list * list, int curr, elem * val);
 int print_list(struct my_list * list);
 
 
+//! @brief add element to tail
+//!
+//! @param [out] list - ptr to our list object
+//! @param [in]  val  - value to put into list
+//!
+//! @return 1 if error, 0 if ok
+//!
+int insert_after_tail(struct my_list * list, elem val);
+
+
+//! @brief add element before head
+//!
+//! @param [out] list - ptr to our list object
+//! @param [in]  val  - value to put into list
+//!
+//! @return 1 if error, 0 if ok
+//!
+int insert_before_head(struct my_list * list, elem val);
+
+
+//! @brief pops tail element
+//!
+//! @param [out] list - ptr to our list object
+//! @param [out] val  - ptr where to put value from node
+//!
+//! @return 1 if error, 0 if ok
+//!
+int list_pop_tail(struct my_list * list, elem * value);
+
+
+//! @brief pops head element
+//!
+//! @param [out] list - ptr to our list object
+//! @param [out] val  - ptr where to put value from node
+//!
+//! @return 1 if error, 0 if ok
+//!
+int list_pop_head(struct my_list * list, elem * value);

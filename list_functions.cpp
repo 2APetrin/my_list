@@ -245,7 +245,7 @@ int list_pop(struct my_list * list, int curr, elem * val)
         list_dump(list);
 
         return 1;
-    }
+    }   
 
     if (curr == list->tail && list->data[curr].prev > 0) //удаление хвоста
     {
@@ -279,6 +279,23 @@ int list_pop(struct my_list * list, int curr, elem * val)
         //printf("deled: pos - %d, val - %lg\n", curr, *val);
 
         return 0;
+    }
+
+    if (curr == list->head && (list->head != list->tail)) //дописать условие для удаления первого элемента
+    {
+        *val = list->data[curr].val;
+        list->data[curr].val = POISON;
+
+        list->data[list->data[curr].next].prev = 0;
+        list->head = list->data[curr].next;
+        list->data[curr].next = list->free;
+        
+        list->free = curr;
+
+        list->data[curr].prev = -1;
+
+        return 0;
+
     }
 
     if (list->data[curr].next > 0 && list->data[curr].prev > 0) // внутри списка
@@ -335,6 +352,50 @@ int print_list(struct my_list * list)
         printf("%4d", list->data[i].prev);
     }
     printf("\n\n\n");
+
+    return 0;
+}
+
+
+int insert_after_tail(struct my_list * list, elem val)
+{
+    assert(list);
+    assert(list->data);
+
+    insert_after(list, (unsigned) list->tail, val);
+
+    return 0;
+}
+
+
+int insert_before_head(struct my_list * list, elem val)
+{
+    assert(list);
+    assert(list->data);
+
+    insert_before(list, (unsigned) list->head, val);
+
+    return 0;
+}
+
+
+int list_pop_tail(struct my_list * list, elem * value)
+{
+    assert(list);
+    assert(list->data);
+
+    list_pop(list, list->tail, value);
+
+    return 0;
+}
+
+
+int list_pop_head(struct my_list * list, elem * value)
+{
+    assert(list);
+    assert(list->data);
+
+    list_pop(list, list->head, value);
 
     return 0;
 }
