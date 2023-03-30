@@ -1,31 +1,34 @@
 #include "list_header.h"
+#include "list_logs.h"
+
 
 int list_ctor_(struct my_list * list, struct var_info creation_params)
 {
-    assert(list);
-    assert(creation_params.file);
-    assert(creation_params.func);
-    assert(creation_params.name);
+    ASSERT(list);
+    ASSERT(creation_params.file);
+    ASSERT(creation_params.func);
+    ASSERT(creation_params.name);
 
-    list->data   = (struct list_elem *) calloc (LIST_MIN_LEN, sizeof(struct list_elem));
+    list->capacity = LIST_MIN_LEN;
+    list->data   = (struct list_elem *) calloc (list->capacity, sizeof(struct list_elem));
     list->info   = creation_params;
     list->status = 0;
     list->head = 0;
     list->tail = 0;
     list->free = 1;
 
-    for (unsigned i = 0; i < LIST_MIN_LEN; i++) // в версии с prev добавить его сюда
+    for (unsigned i = 0; i < list->capacity; i++) // в версии с prev добавить его сюда
     {
         list->data[i].val  = POISON;
     }
 
-    for (unsigned i = 1; i < LIST_MIN_LEN - 1; i++) // переделать p.s. зачем?
+    for (unsigned i = 1; i < list->capacity - 1; i++) // переделать p.s. зачем?
     {
         list->data[i].next = (int) (i + 1);
     }
-    list->data[LIST_MIN_LEN - 1].next = 0;
+    list->data[list->capacity - 1].next = 0;
 
-    for (unsigned i = 1; i < LIST_MIN_LEN; i++)
+    for (unsigned i = 1; i < list->capacity; i++)
     {
         list->data[i].prev = -1;
     }
@@ -37,12 +40,12 @@ int list_ctor_(struct my_list * list, struct var_info creation_params)
 
 int list_dtor(struct my_list * list)
 {
-    assert(list);
-    assert(list->data);
+    ASSERT(list);
+    ASSERT(list->data);
 
     list_dump(list);
 
-    for (unsigned i = 0; i < LIST_MIN_LEN; i++) // в версии с реаллокацией поменять константу на длину списка
+    for (unsigned i = 0; i < list->capacity; i++) // в версии с реаллокацией поменять константу на длину списка
     {
         list->data[i].val  = POISON;
         list->data[i].next = 0;
@@ -65,8 +68,8 @@ int list_dtor(struct my_list * list)
 
 int find_free_ind(struct my_list * list)
 {
-    assert(list);
-    assert(list->data);
+    ASSERT(list);
+    ASSERT(list->data);
 
     return list->data[list->free].next;
 
@@ -76,15 +79,15 @@ int find_free_ind(struct my_list * list)
 
 int insert_after(struct my_list * list, unsigned curr, elem val)
 {
-    assert(list);
-    assert(list->data);
+    ASSERT(list);
+    ASSERT(list->data);
 
     list_dump(list);
 
-    if (curr >= LIST_MIN_LEN)
+    if ((int)curr >= (int)list->capacity)
     {
         printf("current position is out of range in list\n");
-        list->status += BAD_CURR_POS;
+        list->status |= BAD_POS_INS_AFTER;
 
         list_dump(list);
 
@@ -150,15 +153,15 @@ int insert_after(struct my_list * list, unsigned curr, elem val)
 
 int insert_before(struct my_list * list, unsigned curr, elem val)
 {
-    assert(list);
-    assert(list->data);
+    ASSERT(list);
+    ASSERT(list->data);
 
     list_dump(list);
 
-    if (curr >= LIST_MIN_LEN)
+    if (curr >= list->capacity)
     {
         printf("current position is out of range in list\n");
-        list->status += BAD_CURR_POS;
+        list->status |= BAD_POS_INS_BEFORE;
 
         list_dump(list);
 
@@ -223,13 +226,13 @@ int insert_before(struct my_list * list, unsigned curr, elem val)
 
 int list_pop(struct my_list * list, int curr, elem * val)
 {
-    assert(list);
-    assert(list->data);
+    ASSERT(list);
+    ASSERT(list->data);
 
-    if (curr >= (int)LIST_MIN_LEN && curr < 0)
+    if (curr >= (int)list->capacity || curr < 0)
     {
         printf("current position is out of range in list\n");
-        list->status += BAD_CURR_POS;
+        list->status |= BAD_POS_POP;
 
         list_dump(list);
 
@@ -240,7 +243,7 @@ int list_pop(struct my_list * list, int curr, elem * val)
     {
         //printf("you can't remove zero element\n");
 
-        list->status += CURR_ZERO_POS;
+        list->status |= CURR_ZERO_POS;
 
         list_dump(list);
 
@@ -324,30 +327,30 @@ int list_pop(struct my_list * list, int curr, elem * val)
 
 int print_list(struct my_list * list)
 {
-    assert(list);
-    assert(list->data);
+    ASSERT(list);
+    ASSERT(list->data);
 
     printf("head - %d, tail - %d, free - %d\n\n", list->head, list->tail, list->free);
 
-    for (unsigned i = 0; i < LIST_MIN_LEN; i++)
+    for (unsigned i = 0; i < list->capacity; i++)
     {
         printf("%4u", i);
     }
     printf("\n");
 
-    for (unsigned i = 0; i < LIST_MIN_LEN; i++)
+    for (unsigned i = 0; i < list->capacity; i++)
     {
         printf("%4lg", list->data[i].val);
     }
     printf("\n");
 
-    for (unsigned i = 0; i < LIST_MIN_LEN; i++)
+    for (unsigned i = 0; i < list->capacity; i++)
     {
         printf("%4d", list->data[i].next);
     }
     printf("\n");
 
-    for (unsigned i = 0; i < LIST_MIN_LEN; i++)
+    for (unsigned i = 0; i < list->capacity; i++)
     {
         printf("%4d", list->data[i].prev);
     }
@@ -359,8 +362,8 @@ int print_list(struct my_list * list)
 
 int insert_after_tail(struct my_list * list, elem val)
 {
-    assert(list);
-    assert(list->data);
+    ASSERT(list);
+    ASSERT(list->data);
 
     insert_after(list, (unsigned) list->tail, val);
 
@@ -370,8 +373,8 @@ int insert_after_tail(struct my_list * list, elem val)
 
 int insert_before_head(struct my_list * list, elem val)
 {
-    assert(list);
-    assert(list->data);
+    ASSERT(list);
+    ASSERT(list->data);
 
     insert_before(list, (unsigned) list->head, val);
 
@@ -381,8 +384,8 @@ int insert_before_head(struct my_list * list, elem val)
 
 int list_pop_tail(struct my_list * list, elem * value)
 {
-    assert(list);
-    assert(list->data);
+    ASSERT(list);
+    ASSERT(list->data);
 
     list_pop(list, list->tail, value);
 
@@ -392,20 +395,10 @@ int list_pop_tail(struct my_list * list, elem * value)
 
 int list_pop_head(struct my_list * list, elem * value)
 {
-    assert(list);
-    assert(list->data);
+    ASSERT(list);
+    ASSERT(list->data);
 
     list_pop(list, list->head, value);
 
-    return 0;
-}
-
-
-int list_dump_(struct my_list * list, unsigned err_code, location_info loc_inf)
-{
-    return 0;
-}
-unsigned list_verify(struct my_list * list)
-{
     return 0;
 }

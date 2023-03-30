@@ -7,17 +7,11 @@
 
 #define LOCATION __PRETTY_FUNCTION__, __FILE__, __LINE__
 #define list_ctor(list) list_ctor_((list), {(#list), LOCATION})
-#define list_dump(list) list_dump_((list), list_verify((list)), {LOCATION})
 
 
 //! @brief type of data inside list
 //!
 typedef double elem;
-
-
-//! @brief extern logfile variable
-//!
-extern FILE * logfile; 
 
 
 //! @brief minimum length of our list
@@ -74,6 +68,7 @@ struct list_elem
 struct my_list
 {
     struct list_elem * data;
+    unsigned capacity;
     int tail;
     int head;
     int free;
@@ -81,15 +76,6 @@ struct my_list
     int status;
 
     var_info info;
-};
-
-
-//! @brief error codes
-//!
-enum list_errors
-{
-    BAD_CURR_POS  = (1 << 0),
-    CURR_ZERO_POS = (1 << 1)
 };
 
 
@@ -147,26 +133,6 @@ int insert_after(struct my_list * list, unsigned curr, elem val);
 //! @return 1 if error, 0 if ok
 //!
 int insert_before(struct my_list * list, unsigned curr, elem val);
-
-
-//! @brief checks our list for errors before or after using it in function
-//!
-//! @param [in] list - ptr to our list object
-//!
-//! @return error code if there are errors, 0 if list is ok
-//!
-unsigned list_verify(struct my_list * list); //--not written
-
-
-//! @brief takes error code from list_verify and dump info into log
-//!
-//! @param [in] list     - ptr to our list object
-//! @param [in] err_code - error code to dump
-//! @param [in] loc_inf  - file, function and line where dump was called
-//!
-//! @return 1 if error, 0 if ok
-//!
-int list_dump_(struct my_list * list, unsigned err_code, location_info loc_inf); //--not written
 
 
 //! @brief gets index of first free element

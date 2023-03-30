@@ -1,0 +1,93 @@
+<html>
+<pre>
+dump from: 
+func - list_functions.cpp, 
+file - int list_ctor_(my_list*, var_info), 
+line - 36
+
+data-ptr - 0x611000000040,
+capacity - 16,
+free - 1,
+head - 0,
+tail - 0,
+STATUS - 0
+</pre>
+<img src="./images/list_dump1.png" width="75%"><pre>
+dump from: 
+func - list_functions.cpp, 
+file - int insert_after(my_list*, unsigned int, elem), 
+line - 85
+
+data-ptr - 0x611000000040,
+capacity - 16,
+free - 1,
+head - 0,
+tail - 0,
+STATUS - 0
+</pre>
+<img src="./images/list_dump2.png" width="75%"><pre>
+dump from: 
+func - list_functions.cpp, 
+file - int insert_after(my_list*, unsigned int, elem), 
+line - 85
+
+data-ptr - 0x611000000040,
+capacity - 16,
+free - 2,
+head - 1,
+tail - 1,
+STATUS - 0
+</pre>
+<img src="./images/list_dump3.png" width="75%"><pre>
+dump from: 
+func - list_functions.cpp, 
+file - int insert_after(my_list*, unsigned int, elem), 
+line - 85
+
+data-ptr - 0x611000000040,
+capacity - 16,
+free - 3,
+head - 1,
+tail - 2,
+STATUS - 0
+</pre>
+<img src="./images/list_dump4.png" width="75%"><pre>
+dump from: 
+func - list_functions.cpp, 
+file - int insert_after(my_list*, unsigned int, elem), 
+line - 85
+
+data-ptr - 0x611000000040,
+capacity - 16,
+free - 4,
+head - 1,
+tail - 3,
+STATUS - 0
+</pre>
+<img src="./images/list_dump5.png" width="75%"><pre>
+dump from: 
+func - list_functions.cpp, 
+file - int insert_after(my_list*, unsigned int, elem), 
+line - 85
+
+data-ptr - 0x611000000040,
+capacity - 16,
+free - 5,
+head - 1,
+tail - 4,
+STATUS - 0
+</pre>
+<img src="./images/list_dump6.png" width="75%"><pre>
+dump from: 
+func - list_functions.cpp, 
+file - int list_dtor(my_list*), 
+line - 46
+
+data-ptr - 0x611000000040,
+capacity - 16,
+free - 6,
+head - 1,
+tail - 4,
+STATUS - 0
+</pre>
+<img src="./images/list_dump7.png" width="75%">
