@@ -24,6 +24,11 @@ const unsigned LIST_MIN_LEN = 16;
 const elem POISON = NAN;
 
 
+//! @brief accuracy for equald
+//!
+const double EPSYLON = 0.00001;
+
+
 //! @struct variable information
 //! @brief  struct with information about variable for ctor
 //! 
@@ -201,3 +206,64 @@ int list_pop_tail(struct my_list * list, elem * value);
 //! @return 1 if error, 0 if ok
 //!
 int list_pop_head(struct my_list * list, elem * value);
+
+
+//! @brief gets ptr to head node
+//!
+//! @param [out] list - ptr to our list object
+//!
+//! @return ptr to head node of our list
+//!
+int list_get_head(struct my_list * list);
+
+
+//! @brief gets ptr to tail node
+//!
+//! @param [out] list - ptr to our list object
+//!
+//! @return ptr to tail node of our list
+//!
+int list_get_tail(struct my_list * list);
+
+
+//! @brief gets ptr to node after choosen
+//!
+//! @param [out] list - ptr to our list object
+//!
+//! @return ptr to node after choosen node
+//!
+int list_get_after(struct my_list * list, int curr);
+
+
+//! @brief gets ptr to node before choosen
+//!
+//! @param [out] list - ptr to our list object
+//!
+//! @return ptr to node before choosen node
+//!
+int list_get_before(struct my_list * list, int curr);
+
+
+//! @brief searches index of first element that have same val as argument
+//!
+//! @param [in] list - ptr to our list object
+//! @param [in] val  - value to search
+//!
+//! @return index of first element that have same val as argument
+//!
+int list_elem_search(struct my_list * list, elem val);
+
+
+//! @brief checks if two double values are close enough to each othes to be equal
+//!
+int equald(double val1, double val2);
+
+
+//! @brief search elem elem on logical index
+//!
+//! @param [in] list - ptr to our list object
+//! @param [in] logical_index - logical index
+//!
+//! @return physical index of logical index element
+//!
+int search_index_element_based_on_its_logical_index_this_function_is_slooow_do_not_use_it_btw(struct my_list * list, int logical_index);

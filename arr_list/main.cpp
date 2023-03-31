@@ -1,8 +1,6 @@
 #include "list_header.h"
 #include "list_logs.h"
 
-// написать дампирование, реаллокацию, линеаризацию
-// дописать дампирование и забить хуй
 
 int main(void)
 {
@@ -19,9 +17,10 @@ int main(void)
     insert_after(&list, 3, 112);
     insert_after(&list, 2, 45);
     list_pop(&list, 3, &var);
-    //print_list(&list);
 
-    printf("%lg\n", var);
+    //printf("elem - %d\n", list_elem_search(&list, 10));
+    //printf("logical elem - %d\n", search_index_element_based_on_its_logical_index_this_function_is_slooow_do_not_use_it_btw(&list, 3));
+    //printf("%lg\n", var);
 
     list_dtor(&list);
     close_log_file();

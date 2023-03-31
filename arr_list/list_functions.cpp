@@ -419,3 +419,107 @@ int list_pop_head(struct my_list * list, elem * value)
 
     return 0;
 }
+
+
+int list_get_head(struct my_list * list)
+{
+    ASSERT(list);
+
+    return list->head;
+}
+
+
+int list_get_tail(struct my_list * list)
+{
+    ASSERT(list);
+
+    return list->tail;
+}
+
+
+int list_get_after(struct my_list * list, int curr)
+{
+    ASSERT(list);
+
+    if (curr < 0 || curr > (int)list->capacity)
+    {
+        return 0;
+    }
+
+    return list->data[curr].next;
+}
+
+
+int list_get_before(struct my_list * list, int curr)
+{
+    ASSERT(list);
+
+    if (curr < 0 || curr > (int)list->capacity)
+    {
+        return 0;
+    }
+
+    return list->data[curr].prev;
+}
+
+
+int list_elem_search(struct my_list * list, elem val)
+{
+    ASSERT(list);
+
+    int i = list->head;
+    while (i != list->tail)
+    {
+        if (equald(list->data[i].val, val))
+            return i;
+
+        i = list->data[i].next;
+    }
+
+    if (equald(list->data[list->tail].val, val))
+            return list->tail;
+
+    return 0;
+}
+
+
+int equald(double val1, double val2)
+{
+    assert(isfinite(val1));
+    assert(isfinite(val2));
+
+    //printf("%lg %lg\n", val1, val2);
+
+    if (val2 - val1 < EPSYLON && val2 - val1 > -1 * EPSYLON)
+        return 1;
+    
+    return 0;
+}
+
+
+int search_index_element_based_on_its_logical_index_this_function_is_slooow_do_not_use_it_btw(struct my_list * list, int logical_index)
+{
+    ASSERT(list);
+
+    if (logical_index >= (int)list->capacity)
+    {
+        fprintf(log_file, "\n<pre>\nWARNING: logical index bigger than capacity. 0 returned\n</pre>\n");
+        return 0;
+    }
+
+    int i = list->head;
+    int logical_ind = 0;
+
+    while (i != list->tail)
+    {
+        logical_ind++;
+        if (logical_ind == logical_index)
+        {
+            return i;
+        }
+
+        i = list->data[i].next;
+    }
+
+    return 0;
+}
