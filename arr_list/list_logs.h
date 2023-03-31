@@ -1,5 +1,6 @@
 #pragma once
 #include "list_header.h"
+#include <string.h>
 
 #define list_dump(list) list_dump_((list), list_verify((list)), {LOCATION})
 

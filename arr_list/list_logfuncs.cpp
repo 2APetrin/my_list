@@ -32,7 +32,7 @@ int close_grapgviz_file(void)
 
 int open_log_file(void)
 {
-    log_file = fopen("../logs/log_file.txt", "w");
+    log_file = fopen("../logs/log_file.html", "w");
     fprintf(log_file, "<html>\n");
     return 0;
 }
@@ -134,9 +134,9 @@ unsigned int list_dump_(struct my_list * list, unsigned err_code, location_info 
         return err_code;
     }
     
-    fprintf(log_file, "<pre>\n");
-    fprintf(log_file, "dump from: \nfunc - %s, \nfile - %s, \nline - %lu\n\n", loc_inf.file, loc_inf.func, loc_inf.line);
-    fprintf(log_file, "data-ptr - %p,\ncapacity - %u,\nfree - %d,\nhead - %d,\ntail - %d,\nSTATUS - %d\n", list->data, list->capacity, list->free, list->head, list->tail,list->status);
+    fprintf(log_file, "\n<pre>");
+    fprintf(log_file, "\ndump from: \nfunc - %s, \nfile - %s, \nline - %lu\n\n", loc_inf.file, loc_inf.func, loc_inf.line);
+    fprintf(log_file, "data-ptr - %p,\ncapacity - %u,\nfree   - %d,\nhead   - %d,\ntail   - %d,\nstatus - %d\n", list->data, list->capacity, list->free, list->head, list->tail,list->status);
     fprintf(log_file, "</pre>\n");
 
     open_grapgviz_file();
@@ -195,9 +195,15 @@ unsigned int list_dump_(struct my_list * list, unsigned err_code, location_info 
 
     link_head_n_tail_n_free(list->head, list->tail, list->free);
     close_grapgviz_file();
-    graphviz_png_count++;
 
-    fprintf(log_file, "<img src=\"./images/list_dump%d.png\" width=\"75%%\">", graphviz_png_count);
+    char sys_cmd[200] = "dot ../logs/log_graphviz.dot -Tpng -o ../logs/list_dump";
+    snprintf(sys_cmd + strlen(sys_cmd), 30, "%d.png", graphviz_png_count);
+
+    system(sys_cmd);
+
+    fprintf(log_file, "\n<img src=\"../logs/list_dump%d.png\" width=\"100%%\">\n", graphviz_png_count);
+    
+    graphviz_png_count++;
     return 0;
 }
 

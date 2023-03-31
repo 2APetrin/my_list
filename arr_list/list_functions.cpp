@@ -84,6 +84,11 @@ int insert_after(struct my_list * list, unsigned curr, elem val)
 
     list_dump(list);
 
+    if (list->status)
+    {
+        return 1;
+    }
+
     if ((int)curr >= (int)list->capacity)
     {
         printf("current position is out of range in list\n");
@@ -158,6 +163,11 @@ int insert_before(struct my_list * list, unsigned curr, elem val)
 
     list_dump(list);
 
+    if (list->status)
+    {
+        return 1;
+    }
+
     if (curr >= list->capacity)
     {
         printf("current position is out of range in list\n");
@@ -228,6 +238,13 @@ int list_pop(struct my_list * list, int curr, elem * val)
 {
     ASSERT(list);
     ASSERT(list->data);
+
+    list_dump(list);
+
+    if (list->status)
+    {
+        return 1;
+    }
 
     if (curr >= (int)list->capacity || curr < 0)
     {
